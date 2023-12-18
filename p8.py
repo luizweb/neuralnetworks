@@ -1,5 +1,4 @@
 
-
 import numpy as np
 import nnfs
 from nnfs.datasets import spiral_data
@@ -71,61 +70,42 @@ loss = loss_function.calculate(activation2.output, y)
 print("Loss: ", loss)
 
 
+
+
 '''
-# derivatives
-
-
-import matplotlib.pyplot as plt
 import numpy as np 
 
-def f(x):
-    return 2*x**2
+softmax_outputs = np.array([[0.7, 0.1, 0.2],
+                            [0.1, 0.5, 0.4],
+                            [0.02, 0.9, 0.08]])
+
+class_targets = [0, 1, 1]
+
+# print(softmax_outputs[[0,1,2], class_targets])
+
+# categorical cross-entropy
+# print(-np.log(softmax_outputs[ range(len(softmax_outputs)), class_targets ]))
+
+neg_log = -np.log(softmax_outputs[ range(len(softmax_outputs)), class_targets ])
+average_loss = np.mean(neg_log)
+print(average_loss)
 
 
-x = np.arange(0, 50, 0.001)
-y = f(x)
-
-#print(x)
-#print(y)
-
-plt.plot(x,y)
-#plt.show()
-
-colors = ['k', 'g', 'r', 'b', 'c']
+# para evitar em caso da previsao igual a 0  - infinito
+print(-np.log(1-1e-7)) # numero próximo a zero
 
 
-def approximate_tangent_line(x, approximate_derivative, b):
-    return approximate_derivative*x + b
+# Exemplo
+y_pred = 0
+y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
 
-for i in range(5):
-    p2_delta = 0.0001
-
-    x1 = i
-    x2 = x1 + p2_delta
-
-    y1 = f(x1)
-    y2 = f(x2)
-
-    print((x1,y1),(x2,y2))
-
-    approximate_derivative = (y2-y1) / (x2-x1)
-    b = y2 - approximate_derivative*x2
+print(y_pred_clipped)
 
 
 
-
-    to_plot = [x1-0.9, x1, x1+0.9]
-
-    plt.scatter(x1, y1, c=colors[i])
-    plt.plot(to_plot, 
-            [approximate_tangent_line(point, approximate_derivative, b) 
-                for point in to_plot], colors[i])
-
-
-    print('Approximate derivative for f(x)', f'where x= {x1} is {approximate_derivative}')
-
-plt.show()
-
-
+# Accuracy:
+predictions = np.argmax(softmax_outputs, axis=1)
+accuracy = np.mean(predictions == class_targets)
+print("acc: ", accuracy)
 
 '''
